@@ -1,0 +1,21 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/PauseMenuStyle.uss?fileID=7433441132597879392&amp;guid=c49251c2074f35940b3dd4939a8f8f0d&amp;type=3#PauseMenuStyle"/>
+    <ui:VisualElement name="RootHud" style="flex-grow: 1; width: 100%; height: 100%;">
+        <ui:VisualElement name="BackgroundOverlay">
+            <ui:VisualElement name="MainPauseContainer" style="flex-grow: 1; display: flex;">
+                <ui:Button text="Продолжить" name="ResumeButton"/>
+                <ui:Button text="Настройки" name="SettingsButton"/>
+                <ui:Button text="Выход" name="QuitButton"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="SettingsContainer" style="flex-grow: 1; display: none;">
+                <ui:DropdownField label="Разрешение" name="ResolutionDropdown"/>
+                <ui:DropdownField label="Качество" name="QualityDropdown"/>
+                <ui:Slider label="Чувтсительность мыши" value="0.3" high-value="1" name="SensitivitySlider" low-value="0.1" fill="true" show-input-field="true"/>
+                <ui:Button text="Сохранить" name="SaveButton"/>
+                <ui:Button text="Вернуться" name="BackButton"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Crosshair"/>
+        <ui:Label name="MoneyLabel" text="$0"/>
+    </ui:VisualElement>
+</ui:UXML>
