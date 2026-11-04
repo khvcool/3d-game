@@ -1,4 +1,4 @@
-/* Корневой элемент на весь экран */
+/* РљРѕСЂРЅРµРІРѕР№ СЌР»РµРјРµРЅС‚ РЅР° РІРµСЃСЊ СЌРєСЂР°РЅ */
 :root {
     flex-direction: column;
     align-items: center;
@@ -7,7 +7,7 @@
     height: 100%;
 }
 
-/* Окно паузы и настроек */
+/* РћРєРЅРѕ РїР°СѓР·С‹ Рё РЅР°СЃС‚СЂРѕРµРє */
 #MainPauseContainer, #SettingsContainer {
     width: 400px;
     height: auto;          
@@ -21,11 +21,11 @@
     border-width: 1px;
     border-color: rgb(68, 68, 68);
     
-    /* Делаем контейнер колонкой для прижатия кнопки вниз */
+    /* Р”РµР»Р°РµРј РєРѕРЅС‚РµР№РЅРµСЂ РєРѕР»РѕРЅРєРѕР№ РґР»СЏ РїСЂРёР¶Р°С‚РёСЏ РєРЅРѕРїРєРё РІРЅРёР· */
     flex-direction: column; 
 }
 
-/* Общие стили для кнопок */
+/* РћР±С‰РёРµ СЃС‚РёР»Рё РґР»СЏ РєРЅРѕРїРѕРє */
 Button {
     height: 45px;
     margin-bottom: 10px;
@@ -33,9 +33,9 @@ Button {
     border-radius: 4px;
 }
 
-/* Кнопка сохранения в настройках */
+/* РљРЅРѕРїРєР° СЃРѕС…СЂР°РЅРµРЅРёСЏ РІ РЅР°СЃС‚СЂРѕР№РєР°С… */
 #SaveButton {
-    background-color: rgb(40, 140, 40); /* Зеленый цвет успешного действия */
+    background-color: rgb(40, 140, 40); /* Р—РµР»РµРЅС‹Р№ С†РІРµС‚ СѓСЃРїРµС€РЅРѕРіРѕ РґРµР№СЃС‚РІРёСЏ */
     color: rgb(255, 255, 255);
 }
 
@@ -43,17 +43,17 @@ Button {
     background-color: rgb(50, 170, 50);
 }
 
-/* Прижимаем кнопку "Назад" в самый низ контейнера настроек */
+/* РџСЂРёР¶РёРјР°РµРј РєРЅРѕРїРєСѓ "РќР°Р·Р°Рґ" РІ СЃР°РјС‹Р№ РЅРёР· РєРѕРЅС‚РµР№РЅРµСЂР° РЅР°СЃС‚СЂРѕРµРє */
 #BackButton {
-    margin-top: auto;      /* Толкает кнопку вниз */
-    margin-bottom: 0px;    /* Убираем нижний отступ */
+    margin-top: auto;      /* РўРѕР»РєР°РµС‚ РєРЅРѕРїРєСѓ РІРЅРёР· */
+    margin-bottom: 0px;    /* РЈР±РёСЂР°РµРј РЅРёР¶РЅРёР№ РѕС‚СЃС‚СѓРї */
 }
 
-/* Прижимаем кнопку выхода в самый низ меню паузы */
+/* РџСЂРёР¶РёРјР°РµРј РєРЅРѕРїРєСѓ РІС‹С…РѕРґР° РІ СЃР°РјС‹Р№ РЅРёР· РјРµРЅСЋ РїР°СѓР·С‹ */
 #QuitButton {
     margin-top: auto;      
     margin-bottom: 0px;    
-    background-color: rgb(180, 40, 40); /* Красный цвет */
+    background-color: rgb(180, 40, 40); /* РљСЂР°СЃРЅС‹Р№ С†РІРµС‚ */
     color: rgb(255, 255, 255);          
 }
 
@@ -61,7 +61,7 @@ Button {
     background-color: rgb(220, 50, 50);
 }
 
-/* Подложка для затемнения фона при паузе (теперь тоже центрирует элементы) */
+/* РџРѕРґР»РѕР¶РєР° РґР»СЏ Р·Р°С‚РµРјРЅРµРЅРёСЏ С„РѕРЅР° РїСЂРё РїР°СѓР·Рµ (С‚РµРїРµСЂСЊ С‚РѕР¶Рµ С†РµРЅС‚СЂРёСЂСѓРµС‚ СЌР»РµРјРµРЅС‚С‹) */
 #BackgroundOverlay {
     position: absolute;
     left: 0;
@@ -70,14 +70,14 @@ Button {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     
-    /* Добавляем флекс-центровку внутрь оверлея */
+    /* Р”РѕР±Р°РІР»СЏРµРј С„Р»РµРєСЃ-С†РµРЅС‚СЂРѕРІРєСѓ РІРЅСѓС‚СЂСЊ РѕРІРµСЂР»РµСЏ */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-/* Прицел по центру */
+/* РџСЂРёС†РµР» РїРѕ С†РµРЅС‚СЂСѓ */
 #Crosshair {
     position: absolute;
     left: 50%;
@@ -92,7 +92,7 @@ Button {
     border-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Счетчик денег */
+/* РЎС‡РµС‚С‡РёРє РґРµРЅРµРі */
 #MoneyLabel {
     position: absolute;
     left: 30px;
@@ -101,4 +101,47 @@ Button {
     color: rgb(50, 220, 80);
     -unity-font-style: bold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Р“Р»Р°РІРЅРѕРµ РѕРєРЅРѕ РјР°РіР°Р·РёРЅР° */
+#ShopMainContainer,
+#WeaponShopContainer,
+#UpgradeShopContainer {
+    width: 500px;
+    min-height: 350px;
+    max-height: 650px;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    align-self: center;
+    flex-shrink: 0;
+
+    padding: 25px;
+
+    background-color: rgb(45, 45, 48);
+    border-radius: 10px;
+
+    border-width: 2px;
+    border-color: rgb(100, 100, 100);
+}
+
+/* Р—Р°РіРѕР»РѕРІРєРё РјР°РіР°Р·РёРЅР° */
+#ShopMainContainer Label,
+#WeaponShopContainer Label,
+#UpgradeShopContainer Label {
+    font-size: 22px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* РљРЅРѕРїРєРё РјР°РіР°Р·РёРЅР° */
+#ShopMainContainer Button,
+#WeaponShopContainer Button,
+#UpgradeShopContainer Button {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 12px;
+    font-size: 18px;
 }

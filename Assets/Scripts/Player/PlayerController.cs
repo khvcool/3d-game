@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Обязательно для работы нового Input System
+using UnityEngine.InputSystem; // РћР±СЏР·Р°С‚РµР»СЊРЅРѕ РґР»СЏ СЂР°Р±РѕС‚С‹ РЅРѕРІРѕРіРѕ Input System
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
         float moveX = 0f;
         float moveZ = 0f;
 
-        // Читаем нажатия клавиш через новый Input System
+        // Р§РёС‚Р°РµРј РЅР°Р¶Р°С‚РёСЏ РєР»Р°РІРёС€ С‡РµСЂРµР· РЅРѕРІС‹Р№ Input System
         if (Keyboard.current != null)
         {
             if (Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed) moveZ += 1f;

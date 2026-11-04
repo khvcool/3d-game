@@ -152,6 +152,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1209310255}
+  - {fileID: 1061541871}
   m_Father: {fileID: 425253514}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &121466248
@@ -283,6 +284,22 @@ PrefabInstance:
     - target: {fileID: 2464988732922791742, guid: 0bb3763a445b5de4eb87236307133810, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4445190009892968894, guid: 0bb3763a445b5de4eb87236307133810, type: 3}
+      propertyPath: maxHealth
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 4445190009892968894, guid: 0bb3763a445b5de4eb87236307133810, type: 3}
+      propertyPath: objectName
+      value: "\u041F\u0430\u0447\u043A\u0430 \u0434\u0435\u043D\u0435\u0433"
+      objectReference: {fileID: 0}
+    - target: {fileID: 4445190009892968894, guid: 0bb3763a445b5de4eb87236307133810, type: 3}
+      propertyPath: objectTier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4445190009892968894, guid: 0bb3763a445b5de4eb87236307133810, type: 3}
+      propertyPath: minDamageToHurt
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -602,9 +619,10 @@ GameObject:
   - component: {fileID: 775860539}
   - component: {fileID: 775860538}
   - component: {fileID: 775860541}
+  - component: {fileID: 775860543}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: MainCamera
   m_Icon: {fileID: -5938655980376293919, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -740,9 +758,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
   interactionRange: 5
-  moneyLayer:
+  interactableLayer:
     serializedVersion: 2
     m_Bits: 64
+  interactionKey: 19
+  weaponName: "\u041D\u043E\u0436\u043D\u0438\u0446\u044B"
+  weaponDamage: 1
+  attacksPerSecond: 1
+  currentMoney: 5000
+--- !u!114 &775860543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 775860536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49b4cc203aa6414fae5c798d1d0e7d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.PhysicsRaycaster
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1001 &788061048
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -751,6 +790,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9032047914100581692, guid: d471dfce0feaa564c95a9edabfcd6c5c, type: 3}
+      propertyPath: maxHealth
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: -9032047914100581692, guid: d471dfce0feaa564c95a9edabfcd6c5c, type: 3}
+      propertyPath: objectName
+      value: "\u041A\u0443\u043F\u044E\u0440\u044B"
+      objectReference: {fileID: 0}
+    - target: {fileID: -9032047914100581692, guid: d471dfce0feaa564c95a9edabfcd6c5c, type: 3}
+      propertyPath: objectTier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -9032047914100581692, guid: d471dfce0feaa564c95a9edabfcd6c5c, type: 3}
+      propertyPath: minDamageToHurt
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 8239965599649921236, guid: d471dfce0feaa564c95a9edabfcd6c5c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6.454268
@@ -982,6 +1037,118 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92447023b5ff09e4786ef30d9f474c15, type: 3}
+--- !u!1 &1061541870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1061541871}
+  - component: {fileID: 1061541874}
+  - component: {fileID: 1061541873}
+  - component: {fileID: 1061541872}
+  m_Layer: 0
+  m_Name: Sphere
+  m_TagString: Computer
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1061541871
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061541870}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.284, y: 0.634, z: -0.336}
+  m_LocalScale: {x: 0.15, y: 0.3, z: 0.2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 121466247}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!135 &1061541872
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061541870}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1061541873
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061541870}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1061541874
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061541870}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &1161937236
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,10 +1388,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb7c7c064fc328e48bf57dd09faeda06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MoneyObject
-  moneyValue: 100
-  health: 3
-  shakeDuration: 0.1
-  shakeMagnitude: 0.01
+  objectName: "\u041A\u0443\u0431"
+  moneyReward: 100
+  maxHealth: 30
+  minDamageToHurt: 2
+  punchScaleMultiplier: 1.15
+  punchDuration: 0.12
 --- !u!1 &1420411465
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,6 +1405,7 @@ GameObject:
   - component: {fileID: 1420411468}
   - component: {fileID: 1420411467}
   - component: {fileID: 1420411466}
+  - component: {fileID: 1420411469}
   m_Layer: 0
   m_Name: UI_Manager
   m_TagString: Untagged
@@ -1294,6 +1464,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1420411469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420411465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e08a758bfdef24e8348a8fb57803f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamagePopupManager
+  uiDocument: {fileID: 1420411467}
+  popupTemplate: {fileID: 9197481963319205126, guid: 27bd5a56daacd3246b9b9e2a56f94cd8, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

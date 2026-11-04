@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="ShopRoot" style="align-items: center; justify-content: center; width: 100%; height: 100%; flex-grow: 1; background-color: rgba(0, 0, 0, 0.82);">
+        <ui:VisualElement name="ShopMainContainer" style="display: flex; visibility: visible;">
+            <ui:Label text="МАГАЗИН" style="display: flex; opacity: 1;"/>
+            <ui:Button name="OpenWeaponShopButton" text="Купить оружие"/>
+            <ui:Button name="OpenUpgradeShopButton" text="Улучшить оружие"/>
+            <ui:Button name="CloseShopButton" text="Закрыть"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="WeaponShopContainer" style="display: none;">
+            <ui:Label text="ПОКУПКА ОРУЖИЯ"/>
+            <ui:ScrollView name="WeaponList"/>
+            <ui:Button name="BackToShopButton" text="Назад"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="UpgradeShopContainer" style="display: none;">
+            <ui:Label text="УЛУЧШЕНИЕ ОРУЖИЯ"/>
+            <ui:Label name="CurrentWeaponLabel"/>
+            <ui:Label name="DamageInfoLabel"/>
+            <ui:Button name="UpgradeDamageButton" text="Улучшить урон"/>
+            <ui:Label name="SpeedInfoLabel"/>
+            <ui:Button name="UpgradeSpeedButton" text="Улучшить скорость"/>
+            <ui:Button name="BackToShopButton2" text="Назад"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

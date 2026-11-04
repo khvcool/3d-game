@@ -14,39 +14,49 @@ public class PauseMenuUI : MonoBehaviour
     private VisualElement pauseContainer;
     private VisualElement settingsContainer;
 
-    // Кнопки
+    // РљРЅРѕРїРєРё РїР°СѓР·С‹ Рё РЅР°СЃС‚СЂРѕРµРє
     private Button resumeBtn;
     private Button settingsBtn;
     private Button quitBtn;
     private Button backBtn;
-    private Button saveBtn; // Новая кнопка сохранения
+    private Button saveBtn;
 
     private DropdownField resolutionDropdown;
     private DropdownField qualityDropdown;
     private Slider sensitivitySlider;
 
     private Label moneyLabel;
-
     private VisualElement backgroundOverlay;
 
     private bool isPaused = false;
+    public bool IsPaused => isPaused;
     private Resolution[] resolutions;
 
-    // Временные переменные для несохраненных настроек
-    private float tempSensitivity;
-    private int tempQuality;
-    private int tempResolutionIndex;
+    // --- РњРђР“РђР—РРќ ---
+
+    private VisualElement shopMainContainer;
+    private VisualElement weaponShopContainer;
+    private VisualElement upgradeShopContainer;
+
+    private Button openWeaponShopButton;
+    private Button openUpgradeShopButton;
+    private Button closeShopButton;
+    private Button backToShopButton;
+    private Button backToShopButton2;
+
+    private bool isShopOpen = false;
+
+    public bool IsShopOpen => isShopOpen;
 
     public static PauseMenuUI Instance { get; private set; }
 
     void Awake()
     {
         if (Instance == null) Instance = this;
-            else Destroy(gameObject);
+        else Destroy(gameObject);
 
         uiDocument = GetComponent<UIDocument>();
 
-        // Если мы находимся в редакторе и игра НЕ запущена — скрываем UI документа
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
@@ -62,7 +72,7 @@ public class PauseMenuUI : MonoBehaviour
     {
         root = uiDocument.rootVisualElement;
 
-        // Находим лейбл денег в UI
+        // РќР°С…РѕРґРёРј СЌР»РµРјРµРЅС‚С‹ РёРЅС‚РµСЂС„РµР№СЃР°
         moneyLabel = root.Q<Label>("MoneyLabel");
 
         pauseContainer = root.Q<VisualElement>("MainPauseContainer");
@@ -72,7 +82,7 @@ public class PauseMenuUI : MonoBehaviour
         settingsBtn = root.Q<Button>("SettingsButton");
         quitBtn = root.Q<Button>("QuitButton");
         backBtn = root.Q<Button>("BackButton");
-        saveBtn = root.Q<Button>("SaveButton"); // Ищем кнопку в UXML
+        saveBtn = root.Q<Button>("SaveButton");
 
         resolutionDropdown = root.Q<DropdownField>("ResolutionDropdown");
         qualityDropdown = root.Q<DropdownField>("QualityDropdown");
@@ -80,102 +90,166 @@ public class PauseMenuUI : MonoBehaviour
 
         backgroundOverlay = root.Q<VisualElement>("BackgroundOverlay");
 
-        // Подписки на события кнопок
-        resumeBtn.clicked += Resume;
-        settingsBtn.clicked += OpenSettings;
-        quitBtn.clicked += QuitGame;
-        backBtn.clicked += CloseSettings;
+        shopMainContainer = root.Q<VisualElement>("ShopMainContainer");
+        weaponShopContainer = root.Q<VisualElement>("WeaponShopContainer");
+        upgradeShopContainer = root.Q<VisualElement>("UpgradeShopContainer");
 
-        if (saveBtn != null)
-            saveBtn.clicked += SaveSettings;
+        openWeaponShopButton = root.Q<Button>("OpenWeaponShopButton");
+        openUpgradeShopButton = root.Q<Button>("OpenUpgradeShopButton");
+        closeShopButton = root.Q<Button>("CloseShopButton");
 
-        // Загружаем сохраненные ранее настройки при старте
+        backToShopButton = root.Q<Button>("BackToShopButton");
+        backToShopButton2 = root.Q<Button>("BackToShopButton2");
+
+        if (openWeaponShopButton != null)
+            openWeaponShopButton.clicked += OpenWeaponShop;
+
+        if (openUpgradeShopButton != null)
+            openUpgradeShopButton.clicked += OpenUpgradeShop;
+
+        if (closeShopButton != null)
+            closeShopButton.clicked += CloseShop;
+
+        if (backToShopButton != null)
+            backToShopButton.clicked += BackToShopMain;
+
+        if (backToShopButton2 != null)
+            backToShopButton2.clicked += BackToShopMain;
+
+        // РџРѕРґРїРёСЃРєРё РЅР° СЃРѕР±С‹С‚РёСЏ РєРЅРѕРїРѕРє РїР°СѓР·С‹/РЅР°СЃС‚СЂРѕРµРє
+        if (resumeBtn != null) resumeBtn.clicked += Resume;
+        if (settingsBtn != null) settingsBtn.clicked += OpenSettings;
+        if (quitBtn != null) quitBtn.clicked += QuitGame;
+        if (backBtn != null) backBtn.clicked += CloseSettings;
+        if (saveBtn != null) saveBtn.clicked += SaveSettings;
+
         LoadSettings();
 
-        resumeBtn.Focus();
+        if (resumeBtn != null) resumeBtn.Focus();
         Resume();
     }
 
     void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current == null ||
+            !Keyboard.current.escapeKey.wasPressedThisFrame)
+            return;
+
+        if (isShopOpen)
         {
-            if (isPaused)
+            if (weaponShopContainer != null &&
+                weaponShopContainer.style.display == DisplayStyle.Flex)
             {
-                if (settingsContainer.style.display == DisplayStyle.Flex)
-                {
-                    CloseSettings();
-                }
-                else
-                {
-                    Resume();
-                }
+                BackToShopMain();
+            }
+            else if (upgradeShopContainer != null &&
+                    upgradeShopContainer.style.display == DisplayStyle.Flex)
+            {
+                BackToShopMain();
             }
             else
             {
-                Pause();
+                CloseShop();
             }
+
+            return;
+        }
+
+        if (isPaused)
+        {
+            if (settingsContainer != null &&
+                settingsContainer.style.display == DisplayStyle.Flex)
+            {
+                CloseSettings();
+            }
+            else
+            {
+                Resume();
+            }
+        }
+        else
+        {
+            Pause();
         }
     }
 
-    // Метод для обновления денег на экране (вызывайте его, когда игрок уничтожает пачку)
+    // --- РЈРџР РђР’Р›Р•РќРР• Р”Р•РќР¬Р“РђРњР ---
+
     public void UpdateMoneyDisplay(long currentMoney)
     {
         if (moneyLabel != null)
         {
-            moneyLabel.text = $"${currentMoney:N0}"; // Форматирует число с запятыми/пробелами ($1,000,500)
+            moneyLabel.text = $"${currentMoney:N0}";
         }
     }
 
+    // --- РЎРўРђРќР”РђР РўРќРћР• РњР•РќР® РџРђРЈР—Р« Р РќРђРЎРўР РћР™РљР ---
+
     public void Resume()
     {
-        // Скрываем меню и подложку, но HUD (прицел и деньги) остается видимым
-        if (backgroundOverlay != null) backgroundOverlay.style.display = DisplayStyle.None;
-        pauseContainer.style.display = DisplayStyle.None;
-        settingsContainer.style.display = DisplayStyle.None;
+        isShopOpen = false;
+        HideShopPages();
+
+        if (backgroundOverlay != null)
+            backgroundOverlay.style.display = DisplayStyle.None;
+
+        if (pauseContainer != null)
+            pauseContainer.style.display = DisplayStyle.None;
+
+        if (settingsContainer != null)
+            settingsContainer.style.display = DisplayStyle.None;
 
         Time.timeScale = 1f;
         isPaused = false;
 
-        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.Locked;
         UnityEngine.Cursor.visible = false;
 
-        if (playerController != null) playerController.enabled = true;
+        if (playerController != null)
+            playerController.enabled = true;
     }
 
     void Pause()
     {
-        // Показываем подложку затемнения и окно паузы
-        if (backgroundOverlay != null) backgroundOverlay.style.display = DisplayStyle.Flex;
-        pauseContainer.style.display = DisplayStyle.Flex;
-        settingsContainer.style.display = DisplayStyle.None;
+        if (isShopOpen)
+            return;
+
+        HideShopPages();
+
+        if (backgroundOverlay != null)
+            backgroundOverlay.style.display = DisplayStyle.Flex;
+
+        if (pauseContainer != null)
+            pauseContainer.style.display = DisplayStyle.Flex;
+
+        if (settingsContainer != null)
+            settingsContainer.style.display = DisplayStyle.None;
 
         Time.timeScale = 0f;
         isPaused = true;
 
-        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.None;
         UnityEngine.Cursor.visible = true;
 
-        if (playerController != null) playerController.enabled = false;
+        if (playerController != null)
+            playerController.enabled = false;
     }
 
     void OpenSettings()
     {
-        pauseContainer.style.display = DisplayStyle.None;
-        settingsContainer.style.display = DisplayStyle.Flex;
+        if (pauseContainer != null) pauseContainer.style.display = DisplayStyle.None;
+        if (settingsContainer != null) settingsContainer.style.display = DisplayStyle.Flex;
     }
 
     void CloseSettings()
     {
-        // При закрытии без сохранения можно вернуть старые значения из PlayerPrefs
         LoadSettings();
-        settingsContainer.style.display = DisplayStyle.None;
-        pauseContainer.style.display = DisplayStyle.Flex;
+        if (settingsContainer != null) settingsContainer.style.display = DisplayStyle.None;
+        if (pauseContainer != null) pauseContainer.style.display = DisplayStyle.Flex;
     }
 
     void LoadSettings()
     {
-        // Разрешения
         resolutions = Screen.resolutions;
         List<string> options = new List<string>();
         int currentIndex = 0;
@@ -189,64 +263,68 @@ public class PauseMenuUI : MonoBehaviour
                 currentIndex = i;
             }
         }
-        resolutionDropdown.choices = options;
+        if (resolutionDropdown != null)
+        {
+            resolutionDropdown.choices = options;
+            int savedResIndex = PlayerPrefs.GetInt("ResolutionIndex", currentIndex);
+            resolutionDropdown.index = savedResIndex;
+        }
 
-        int savedResIndex = PlayerPrefs.GetInt("ResolutionIndex", currentIndex);
-        resolutionDropdown.index = savedResIndex;
+        if (qualityDropdown != null)
+        {
+            List<string> qualityNames = new List<string>(QualitySettings.names);
+            qualityDropdown.choices = qualityNames;
+            int savedQuality = PlayerPrefs.GetInt("QualityIndex", QualitySettings.GetQualityLevel());
+            qualityDropdown.index = savedQuality;
+            QualitySettings.SetQualityLevel(savedQuality);
+        }
 
-        // Качество графики
-        List<string> qualityNames = new List<string>(QualitySettings.names);
-        qualityDropdown.choices = qualityNames;
-        int savedQuality = PlayerPrefs.GetInt("QualityIndex", QualitySettings.GetQualityLevel());
-        qualityDropdown.index = savedQuality;
-        QualitySettings.SetQualityLevel(savedQuality);
-
-        // Чувствительность мыши
-        float savedSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", playerController != null ? playerController.mouseSensitivity : 0.3f);
-        sensitivitySlider.value = savedSensitivity;
-
-        sensitivitySlider.RegisterValueChangedCallback(evt => {
-            // Округляем значение до ближайших 0.05
-            float snappedValue = Mathf.Round(evt.newValue / 0.05f) * 0.05f;
-            if (Mathf.Abs(sensitivitySlider.value - snappedValue) > 0.001f)
-            {
-                sensitivitySlider.value = snappedValue;
-            }
-
-            if (playerController != null)
-            {
-                playerController.mouseSensitivity = snappedValue;
-            }
-        });
+        float savedSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", playerController != null ? playerController.mouseSensitivity : 0.2f);
+        if (sensitivitySlider != null)
+        {
+            sensitivitySlider.value = savedSensitivity;
+            sensitivitySlider.RegisterValueChangedCallback(evt => {
+                float snappedValue = Mathf.Round(evt.newValue / 0.05f) * 0.05f;
+                if (Mathf.Abs(sensitivitySlider.value - snappedValue) > 0.001f)
+                {
+                    sensitivitySlider.value = snappedValue;
+                }
+                if (playerController != null)
+                {
+                    playerController.mouseSensitivity = snappedValue;
+                }
+            });
+        }
     }
 
     public void SaveSettings()
     {
-        // Сохраняем чувствительность
         if (playerController != null)
         {
             playerController.mouseSensitivity = sensitivitySlider.value;
             PlayerPrefs.SetFloat("MouseSensitivity", sensitivitySlider.value);
         }
 
-        // Сохраняем качество графики
-        int selectedQuality = qualityDropdown.index;
-        QualitySettings.SetQualityLevel(selectedQuality);
-        PlayerPrefs.SetInt("QualityIndex", selectedQuality);
-
-        // Сохраняем разрешение
-        int selectedRes = resolutionDropdown.index;
-        if (selectedRes >= 0 && selectedRes < resolutions.Length)
+        if (qualityDropdown != null)
         {
-            Resolution res = resolutions[selectedRes];
-            Screen.SetResolution(res.width, res.height, Screen.fullScreen);
-            PlayerPrefs.SetInt("ResolutionIndex", selectedRes);
+            int selectedQuality = qualityDropdown.index;
+            QualitySettings.SetQualityLevel(selectedQuality);
+            PlayerPrefs.SetInt("QualityIndex", selectedQuality);
+        }
+
+        if (resolutionDropdown != null)
+        {
+            int selectedRes = resolutionDropdown.index;
+            if (selectedRes >= 0 && selectedRes < resolutions.Length)
+            {
+                Resolution res = resolutions[selectedRes];
+                Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+                PlayerPrefs.SetInt("ResolutionIndex", selectedRes);
+            }
         }
 
         PlayerPrefs.Save();
-        Debug.Log("Настройки успешно сохранены!");
-
-        // Возвращаемся в главное меню паузы после сохранения
+        Debug.Log("РќР°СЃС‚СЂРѕР№РєРё СѓСЃРїРµС€РЅРѕ СЃРѕС…СЂР°РЅРµРЅС‹!");
         CloseSettings();
     }
 
@@ -257,5 +335,87 @@ public class PauseMenuUI : MonoBehaviour
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
+    }
+
+    // РћС‚РєСЂС‹С‚РёРµ РіР»Р°РІРЅРѕРіРѕ РјРµРЅСЋ РјР°РіР°Р·РёРЅР°
+    public void OpenShop()
+    {
+        if (isPaused || isShopOpen)
+            return;
+
+        isShopOpen = true;
+
+        // РЎРЅР°С‡Р°Р»Р° СЃРєСЂС‹РІР°РµРј РІСЃРµ СЃС‚СЂР°РЅРёС†С‹
+        HideShopPages();
+
+        // Р—Р°С‚РµРј РїРѕРєР°Р·С‹РІР°РµРј РіР»Р°РІРЅРѕРµ РѕРєРЅРѕ
+        if (backgroundOverlay != null)
+            backgroundOverlay.style.display = DisplayStyle.Flex;
+
+        if (shopMainContainer != null)
+            shopMainContainer.style.display = DisplayStyle.Flex;
+
+        Time.timeScale = 1f;
+
+        UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+
+        if (playerController != null)
+            playerController.enabled = false;
+
+        Debug.Log("РњР°РіР°Р·РёРЅ РѕС‚РєСЂС‹С‚");
+    }
+
+    // РџРѕРєСѓРїРєР° РѕСЂСѓР¶РёСЏ
+    private void OpenWeaponShop()
+    {
+        HideShopPages();
+
+        if (weaponShopContainer != null)
+            weaponShopContainer.style.display = DisplayStyle.Flex;
+    }
+
+    // РЈР»СѓС‡С€РµРЅРёСЏ
+    private void OpenUpgradeShop()
+    {
+        HideShopPages();
+
+        if (upgradeShopContainer != null)
+            upgradeShopContainer.style.display = DisplayStyle.Flex;
+    }
+
+    // РќР°Р·Р°Рґ Рє РіР»Р°РІРЅРѕРјСѓ РјРµРЅСЋ РјР°РіР°Р·РёРЅР°
+    private void BackToShopMain()
+    {
+        HideShopPages();
+
+        if (shopMainContainer != null)
+            shopMainContainer.style.display = DisplayStyle.Flex;
+    }
+
+    // РЎРєСЂС‹С‚СЊ РІСЃРµ СЃС‚СЂР°РЅРёС†С‹ РјР°РіР°Р·РёРЅР°
+    private void HideShopPages()
+    {
+        if (shopMainContainer != null)
+            shopMainContainer.style.display = DisplayStyle.None;
+
+        if (weaponShopContainer != null)
+            weaponShopContainer.style.display = DisplayStyle.None;
+
+        if (upgradeShopContainer != null)
+            upgradeShopContainer.style.display = DisplayStyle.None;
+    }
+
+    // Р—Р°РєСЂС‹С‚СЊ РјР°РіР°Р·РёРЅ
+    public void CloseShop()
+    {
+        isShopOpen = false;
+
+        HideShopPages();
+
+        if (backgroundOverlay != null)
+            backgroundOverlay.style.display = DisplayStyle.None;
+
+        Resume();
     }
 }

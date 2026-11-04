@@ -14,6 +14,26 @@
                 <ui:Button text="Сохранить" name="SaveButton"/>
                 <ui:Button text="Вернуться" name="BackButton"/>
             </ui:VisualElement>
+            <ui:VisualElement name="ShopMainContainer" style="flex-grow: 1; display: none;">
+                <ui:Label text="МАГАЗИН" style="display: flex; opacity: 1;"/>
+                <ui:Button name="OpenWeaponShopButton" text="Купить оружие"/>
+                <ui:Button name="OpenUpgradeShopButton" text="Улучшить оружие"/>
+                <ui:Button name="CloseShopButton" text="Закрыть"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="WeaponShopContainer" style="flex-grow: 1; display: none;">
+                <ui:Label text="ПОКУПКА ОРУЖИЯ"/>
+                <ui:ScrollView name="WeaponList"/>
+                <ui:Button name="BackToShopButton" text="Назад"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="UpgradeShopContainer" style="flex-grow: 1; display: none;">
+                <ui:Label text="УЛУЧШЕНИЕ ОРУЖИЯ"/>
+                <ui:Label name="CurrentWeaponLabel"/>
+                <ui:Label name="DamageInfoLabel"/>
+                <ui:Button name="UpgradeDamageButton" text="Улучшить урон"/>
+                <ui:Label name="SpeedInfoLabel"/>
+                <ui:Button name="UpgradeSpeedButton" text="Улучшить скорость"/>
+                <ui:Button name="BackToShopButton2" text="Назад"/>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Crosshair"/>
         <ui:Label name="MoneyLabel" text="$0"/>

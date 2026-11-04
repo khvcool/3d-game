@@ -4,54 +4,168 @@ using UnityEngine.InputSystem;
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("Settings")]
-    [Tooltip("Максимальная дистанция взаимодействия с деньгами")]
     public float interactionRange = 5f;
+    public LayerMask interactableLayer;
+    [Header("Computer Interaction")]
+    public Key interactionKey = Key.E;
 
-    [Tooltip("Слой, на котором находятся пачки денег")]
-    public LayerMask moneyLayer;
+    [Header("Weapon Stats")]
+    public string weaponName = "РќРѕР¶РЅРёС†С‹";
+    public int weaponDamage = 1;
+    public float attacksPerSecond = 1.0f;
 
-    private long currentMoney = 0;
+    [Header("Economy")]
+    [SerializeField] private long currentMoney = 0; // Р РµР°Р»СЊРЅС‹Р№ Р±Р°Р»Р°РЅСЃ РґРµРЅРµРі РёРіСЂРѕРєР°
+
+    private float nextAttackTime = 0f;
+
+    // РџСѓР±Р»РёС‡РЅРѕРµ СЃРІРѕР№СЃС‚РІРѕ/РјРµС‚РѕРґ РґР»СЏ РїСЂРѕРІРµСЂРєРё Р±Р°Р»Р°РЅСЃР° РёР· РјР°РіР°Р·РёРЅР°
+    public long CurrentMoney => currentMoney;
 
     void Update()
     {
-        // Проверяем клик левой кнопкой мыши (или тапа)
-        // Убедимся, что игра не на паузе (Time.timeScale > 0)
-        if (Time.timeScale > 0 && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        // Р’Р·Р°РёРјРѕРґРµР№СЃС‚РІРёРµ СЃ РєРѕРјРїСЊСЋС‚РµСЂРѕРј
+        if (Time.timeScale > 0 &&
+            Keyboard.current != null &&
+            Keyboard.current[interactionKey].wasPressedThisFrame)
         {
-            ShootRaycast();
+            TryOpenShop();
+        }
+
+        // РђС‚Р°РєР°
+        if (Time.timeScale > 0 &&
+            Mouse.current != null &&
+            Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (Time.time >= nextAttackTime)
+            {
+                ShootRaycast();
+
+                float cooldown = 1f / Mathf.Max(attacksPerSecond, 0.1f);
+                nextAttackTime = Time.time + cooldown;
+            }
+        }
+    }
+
+    void TryOpenShop()
+    {
+        Ray ray = new Ray(transform.position, transform.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionRange))
+        {
+            if (hit.collider.CompareTag("Computer"))
+            {
+                if (PauseMenuUI.Instance != null)
+                {
+                    PauseMenuUI.Instance.OpenShop();
+                }
+            }
         }
     }
 
     void ShootRaycast()
     {
-        // Создаем луч из центра камеры вперед
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-        // Выпускаем луч
-        if (Physics.Raycast(ray, out hit, interactionRange, moneyLayer))
+        if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
         {
-            // Проверяем, попали ли мы по объекту с компонентом денег
-            MoneyObject money = hit.collider.GetComponent<MoneyObject>();
-            if (money != null)
+            DestructibleObject target =
+                hit.collider.GetComponent<DestructibleObject>();
+
+            if (target != null)
             {
-                // Наносим урон / уничтожаем пачку
-                long earned = money.TakeDamage();
-                AddMoney(earned);
+                bool damageApplied = target.TakeDamage(
+                    weaponDamage,
+                    out long earned
+                );
+
+                // РџРѕРєР°Р·С‹РІР°РµРј С†РёС„СЂС‹ С‚РѕР»СЊРєРѕ РїСЂРё СѓСЃРїРµС€РЅРѕРј РЅР°РЅРµСЃРµРЅРёРё СѓСЂРѕРЅР°
+                if (damageApplied)
+                {
+                    if (DamagePopupManager.Instance != null)
+                    {
+                        DamagePopupManager.Instance.ShowDamage(
+                            hit.point + Vector3.up * 0.1f,
+                            weaponDamage
+                        );
+                    }
+
+                    if (earned > 0)
+                        AddMoney(earned);
+                }
             }
         }
     }
+    // void ShootRaycast()
+    // {
+    //     Ray ray = new Ray(transform.position, transform.forward);
+    //     RaycastHit hit;
 
-    void AddMoney(long amount)
+    //     if (Physics.Raycast(ray, out hit, interactionRange, interactableLayer))
+    //     {
+    //         DestructibleObject target = hit.collider.GetComponent<DestructibleObject>();
+    //         if (target != null)
+    //         {
+    //             long earned = target.TakeDamage(weaponDamage);
+                
+    //             // РЎРїР°РІРЅРёРј С†РёС„СЂСѓ СѓСЂРѕРЅР° С‡РµСЂРµР· UI Toolkit РњРµРЅРµРґР¶РµСЂ
+    //             if (DamagePopupManager.Instance != null)
+    //             {
+    //                 DamagePopupManager.Instance.ShowDamage(hit.point + Vector3.up * 0.1f, weaponDamage);
+    //             }
+
+    //             if (earned > 0)
+    //             {
+    //                 AddMoney(earned);
+    //             }
+    //         }
+    //     }
+    // }
+
+    public void AddMoney(long amount)
     {
         currentMoney += amount;
-
-        // Обновляем UI через наш класс PauseMenuUI
+        
+        // РћР±РЅРѕРІР»СЏРµРј РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ РІ UI С‡РµСЂРµР· PauseMenuUI
         if (PauseMenuUI.Instance != null)
         {
             PauseMenuUI.Instance.UpdateMoneyDisplay(currentMoney);
         }
+    }
 
-        Debug.Log($"Заработано! Всего денег: ${currentMoney}");
+    // РњРµС‚РѕРґ СЃРїРёСЃР°РЅРёСЏ РґРµРЅРµРі РґР»СЏ РјР°РіР°Р·РёРЅР°
+    public bool TrySpendMoney(long amount)
+    {
+        if (currentMoney >= amount)
+        {
+            currentMoney -= amount;
+            
+            // РћР±РЅРѕРІР»СЏРµРј UI
+            if (PauseMenuUI.Instance != null)
+            {
+                PauseMenuUI.Instance.UpdateMoneyDisplay(currentMoney);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void UpgradeWeaponStats(int newDamage, float newSpeed, string newName)
+    {
+        weaponDamage = newDamage;
+        attacksPerSecond = newSpeed;
+        weaponName = newName;
+        Debug.Log($"РћСЂСѓР¶РёРµ РёР·РјРµРЅРµРЅРѕ/РїСЂРѕРєР°С‡Р°РЅРѕ: {weaponName} | РЈСЂРѕРЅ: {weaponDamage} | РЎРєРѕСЂРѕСЃС‚СЊ: {attacksPerSecond}/СЃРµРє");
+    }
+
+    public void RefreshWeaponStats(
+        int newDamage,
+        float newSpeed,
+        string newName)
+    {
+        weaponDamage = newDamage;
+        attacksPerSecond = newSpeed;
+        weaponName = newName;
     }
 }
